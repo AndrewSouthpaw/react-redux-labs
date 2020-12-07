@@ -1,34 +1,30 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { store } from './store/store';
-import { Landing } from './Landing';
+import { StatusBar } from 'expo-status-bar'
+import React, { useEffect } from 'react'
+import { StyleSheet, View } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
+import { Landing } from './Landing'
 
-export default class App extends Component {
- constructor() {
-  super();
-  this.state = store.getState();
-  store.subscribe(() => this.setState(store.getState()));
- }
+export const App = () => {
+  const films = useSelector(state => state.films)
+  const dispatch = useDispatch()
 
- componentDidMount() {
-  store.dispatch({type: "FETCH_FILMS"});
- }
+  useEffect(() => {
+    dispatch({ type: 'FETCH_FILMS' })
+  }, [])
 
- render() {
-  console.log(this.state);
   return (
-   <View style={styles.container}>
-    <Landing {...this.state} />
-   </View>
-  );
- }
+    <View style={styles.container}>
+      <StatusBar style="auto" />
+      <Landing films={films} />
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
- container: {
-  flex: 1,
-  backgroundColor: '#fff',
-  alignItems: 'center',
-  justifyContent: 'center',
- },
-});
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})
