@@ -6,7 +6,8 @@
   "scripts": {
     "reload-daam": "node ./reload-daam.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "json-server --config json-server.json ./database.json"
+    "server": "json-server --config json-server.json ./database.json",
+    "server-device": "json-server --config json-server.json ./database.json -H $(ipconfig getifaddr en0)"
   },
   "author": "RapPayne",
   "license": "ISC",
