@@ -7,11 +7,14 @@ const addFilm = (film, state) => (
 )
 registerHandler('ADD_FILM', addFilm)
 
+const setSelectedDate = (selectedDate, state) => ({ ...state, selectedDate })
+registerHandler('SET_SELECTED_DATE', setSelectedDate)
+
 const initialState = {
   films: [],
-  selected_date: new Date(),
-  selected_film: {},
-  show_film_details: false,
+  selectedDate: new Date(),
+  selectedFilm: {},
+  showFilmDetails: false,
   showings: [],
   tables: [],
 }
