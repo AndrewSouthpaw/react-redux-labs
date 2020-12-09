@@ -22,7 +22,7 @@ In the labs, you'll create the client portion from scratch.
 ## How to run
 ```bash
 cd server
-npm run dev
+npm run server
 ```
 This will run the client AND the server. Both are in watch mode so that if you make any changes to the source, it restarts.
 
