@@ -1,26 +1,28 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { store } from './store/store';
-import { Landing } from './Landing';
+import { StatusBar } from 'expo-status-bar'
+import React, { useEffect } from 'react'
+import { StyleSheet, View } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
+import { Landing } from './Landing'
+import axios from 'axios'
+import { host } from './api'
 
-export default class App extends React.Component {
-  constructor() {
-    super();
-    this.state = store.getState();
-    store.subscribe( () => this.setState(store.getState()) );
-  } 
+export const App = () => {
+  const films = useSelector(state => state.films)
+  const selectedDate = useSelector(state => state.selectedDate)
+  const dispatch = useDispatch()
 
-  componentDidMount() {
-    store.dispatch({type:"FETCH_FILMS"});
-  }
+  useEffect(() => {
+    axios.get(`${host}/api/films`)
+      .then(({ data }) => { console.log('data', data) })
+    dispatch({ type: 'FETCH_FILMS' })
+  }, [])
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <Landing {...this.state} />
-      </View>
-    );
-  }
+  return (
+    <View style={styles.container}>
+      <StatusBar style="auto" />
+      <Landing films={films} selectedDate={selectedDate} />
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -28,6 +30,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
   },
-});
+})

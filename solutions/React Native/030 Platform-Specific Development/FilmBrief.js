@@ -1,19 +1,14 @@
-import React from 'react';
-import { Image, Text, TouchableHighlight, View } from 'react-native';
-import { store } from './store/store';
+import React from 'react'
+import { Image, Text, View } from 'react-native'
+import { host } from './api'
 
-export function FilmBrief(props) {
-  return (
-    <TouchableHighlight onPress={selectThisFilm}>
-      <View>
-        <Image source={{ uri: `http://localhost:5000/${props.film.poster_path}` }} style={{ height: 100, width: 100 }} />
-        <Text>{props.film.title}</Text>
-        <Text>{props.film.tagline}</Text>
-      </View>
-    </TouchableHighlight>
-  )
-
-  function selectThisFilm(e) {
-    store.dispatch({type: "SET_SELECTED_FILM", film:props.film});
-  }
-}
+export const FilmBrief = ({ film: { id, title, tagline, poster_path } }) => (
+  <View key={id}>
+    <Image
+      source={{ uri: `${host}${poster_path}` }}
+      style={{ height: 100, width: 100, resizeMode: 'contain' }}
+    />
+    <Text>{title}</Text>
+    <Text>{tagline}</Text>
+  </View>
+)
