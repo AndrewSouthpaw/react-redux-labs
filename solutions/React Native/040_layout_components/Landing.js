@@ -1,31 +1,44 @@
-import React from 'react';
-import { Button, Modal, SafeAreaView, ScrollView, Text, View } from 'react-native';
-import { store } from './store/store';
-import { DatePicker } from './DatePicker';
-import { FilmBrief } from './FilmBrief';
-import { FilmDetails } from './FilmDetails';
+import React, { useState } from 'react'
+import { Modal, RefreshControl, ScrollView, Button, Text, View } from 'react-native'
+import { FilmBrief } from './FilmBrief'
+import { DatePicker } from './DatePicker'
+import { useDispatch } from 'react-redux'
+import { FilmDetails } from './FilmDetails'
+import showings from './showings.json'
 
-
-export const Landing = props => {
- const { films, selected_date, selected_film, show_film_details, showings } = props;
- return (
-  <SafeAreaView>
-   <ScrollView>
-    <View>
-     <Text>Dinner and a Movie</Text>
-     <Text>Tap on a film to see its details and pick a date to see showtimes.</Text>
-     <DatePicker selected_date={selected_date} />
-     {films.map(film => <FilmBrief film={film} isSelected={film === selected_film} key={film.id} />)}
-    </View>
-   </ScrollView>
-   <Modal visible={show_film_details}>
-    <FilmDetails selected_film={selected_film} selected_date={selected_date} showings={showings} />
-    <Button onPress={dismissModal} title="Done" />
-   </Modal>
-  </SafeAreaView>
- )
+const wait = (timeout) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout)
+  })
 }
 
-function dismissModal() {
- store.dispatch({ type: "HIDE_FILM_DETAILS" });
+export const Landing = ({ films, selectedDate, selectedFilm, showFilmDetails }) => {
+  const dispatch = useDispatch()
+  const [refreshing, setRefreshing] = useState(false)
+
+  const onRefresh = () => {
+    setRefreshing(true)
+    wait(2000).then(() => setRefreshing(false))
+  }
+
+  const closeModal = () => { dispatch({ type: 'HIDE_FILM_DETAILS' }) }
+
+  return (
+    <View>
+      <Modal animationType="slide" visible={showFilmDetails}>
+        <FilmDetails selectedDate={selectedDate} film={selectedFilm} showings={showings} />
+        <Button title="Done" onPress={closeModal} />
+      </Modal>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <DatePicker selectedDate={selectedDate} />
+        {films.map((film) => (
+          <FilmBrief key={film.id} film={film} selected={film === selectedFilm} />
+        ))}
+      </ScrollView>
+    </View>
+  )
 }

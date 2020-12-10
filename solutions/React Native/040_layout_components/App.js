@@ -1,36 +1,40 @@
-import React, { Component } from 'react';
-import { StatusBar, StyleSheet, View } from 'react-native';
-import { store } from './store/store';
-import { Landing } from './Landing';
-import { Checkout } from './Checkout';
+import { StatusBar } from 'expo-status-bar'
+import React, { useEffect } from 'react'
+import { SafeAreaView, StyleSheet } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
+import { Landing } from './Landing'
+import axios from 'axios'
+import { host } from './api'
+import { Checkout } from './Checkout'
 
-export default class App extends Component {
- constructor() {
-  super();
-  this.state = store.getState();
-  store.subscribe(() => this.setState(store.getState()));
- }
+export const App = () => {
+  const { films, selectedDate, selectedFilm, showFilmDetails } = useSelector(state => state)
+  const dispatch = useDispatch()
 
- componentDidMount() {
-  store.dispatch({type: "FETCH_FILMS"});
- }
+  useEffect(() => {
+    axios.get(`${host}/api/films`)
+      .then(({ data }) => { console.log('data', data) })
+    dispatch({ type: 'FETCH_FILMS' })
+  }, [])
 
- render() {
   return (
-   <View style={styles.container}>
-    <StatusBar barStyle="light-content" hidden={true}></StatusBar>
-    {/* <Checkout /> */}
-    <Landing {...this.state} />
-   </View>
-  );
- } 
+    <SafeAreaView style={styles.container}>
+      <StatusBar style="auto" hidden />
+      <Landing
+        films={films}
+        selectedDate={selectedDate}
+        selectedFilm={selectedFilm}
+        showFilmDetails={showFilmDetails}
+      />
+      {/*<Checkout />*/}
+    </SafeAreaView>
+  )
 }
 
 const styles = StyleSheet.create({
- container: {
-  flex: 1,
-  backgroundColor: '#fff',
-  alignItems: 'center',
-  justifyContent: 'center',
- },
-});
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+  },
+})

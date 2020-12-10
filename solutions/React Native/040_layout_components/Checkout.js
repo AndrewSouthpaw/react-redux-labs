@@ -1,36 +1,33 @@
-import React, { useState } from 'react';
-import { Button, KeyboardAvoidingView, SafeAreaView, ScrollView, Text, TextInput, View } from 'react-native';
+import React, { useState } from 'react'
+import { Button, KeyboardAvoidingView, SafeAreaView, ScrollView, Text, TextInput } from 'react-native'
 
-export const Checkout = props => {
- const [firstName, setFirstName] = useState(props.firstName);
- const [lastName, setLastName] = useState(props.lastName);
- const [creditCard, setCreditCard] = useState(props.creditCard);
- const [email, setEmail] = useState(props.email);
- const [phone, setPhone] = useState(props.phone);
- return (
-  <SafeAreaView>
-   <KeyboardAvoidingView behavior="height">
-    <View>
-     <ScrollView>
-      <Text>Checking out</Text>
-      <Text>First name</Text>
-      <TextInput value={firstName} onChangeText={setFirstName} />
-      <Text>Last name</Text>
-      <TextInput value={lastName} onChangeText={setLastName} />
-      <Text>Credit Card</Text>
-      <TextInput keyboardType="number-pad" value={creditCard} onChangeText={setCreditCard} />
-      <Text>Email</Text>
-      <TextInput keyboardType="email-address" value={email} onChangeText={setEmail} />
-      <Text>Phone</Text>
-      <TextInput keyboardType="phone-pad" value={phone} onChangeText={setPhone} />
-      <Button title="Purchase" onPress={purchase} />
-     </ScrollView>
-    </View>
-   </KeyboardAvoidingView>
-  </SafeAreaView>
- )
-}
+export const Checkout = () => {
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [creditCard, setCreditCard] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
 
-function purchase() {
- console.log("Purchasing")
+  const purchase = () => { console.log('purchasing') }
+
+  return (
+    <SafeAreaView>
+      <KeyboardAvoidingView behavior="padding">
+        <ScrollView style={{flex: 1}}>
+          <Text>We're checking out</Text>
+          <Text>First name</Text>
+          <TextInput value={firstName} onChangeText={setFirstName} />
+          <Text>Last name</Text>
+          <TextInput value={lastName} onChangeText={setLastName} />
+          <Text>Credit card</Text>
+          <TextInput value={creditCard} onChangeText={setCreditCard} keyboardType="number-pad" />
+          <Text>Email</Text>
+          <TextInput value={email} onChangeText={setEmail} keyboardType="email-address" />
+          <Text>Phone</Text>
+          <TextInput value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
+          <Button title="Purchase" onPress={purchase} />
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  )
 }
