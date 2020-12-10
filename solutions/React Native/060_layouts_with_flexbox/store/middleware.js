@@ -1,45 +1,55 @@
-import { host as server } from '../helpers';
+import axios from 'axios'
+import { host } from '../api'
 
-const fetchFilmsMiddleware = ({ dispatch, getState }) => next => action => {
-  if (action.type === "FETCH_FILMS") {
-    fetch(`${server}/api/films`)
-      .then(res => res.json())
-      .then(films => films.forEach(film => dispatch({ type: "ADD_FILM", film })))
-      .catch(err => console.error("Couldn't fetch films", err))
+const fetchFilmsMiddleware = ({ dispatch }) => next => async (action) => {
+  if (action.type === 'FETCH_FILMS') {
+    try {
+      const { data: films } = await axios.get(`${host}/api/films`)
+      films.forEach(film => dispatch({ type: 'ADD_FILM', film }))
+    } catch (e) {
+      console.error('Could not fetch films', e)
+    }
   }
-  next(action);
+
+  return next(action)
 }
 
-const fetchShowingsForDateMiddleware = ({ dispatch, getState }) => next => action => {
-  next(action);
-  if (action.type === "SET_SELECTED_DATE" || action.type === "SET_SELECTED_FILM") {
-    const selected_date = getState().selected_date.toISOString().split('T')[0];
-    const film_id = getState().selected_film.id;
-    fetch(`${server}/api/showings/${film_id}/${selected_date}`)
-      .then(res => res.json())
-      .then(showings => dispatch({ type: "SET_SHOWINGS", showings }))
-      .catch(err => console.error("Couldn't fetch showings", err))
+const fetchTablesAndSeatsMiddleware = ({ dispatch }) => next => async (action) => {
+  const { type, theaterId } = action
+  if (type === 'FETCH_TABLES_AND_SEATS') {
+    try {
+      const { data: tables } = await axios.get(`${host}/api/theaters/${theaterId}/tables`)
+      dispatch({ type: 'SET_TABLES', tables })
+    } catch (e) {
+      console.error('Could not fetch tables', e)
+    }
   }
 }
 
-const fetchTablesAndSeatsMiddleware = ({ dispatch, getState }) => next => action => {
-  if (action.type === "FETCH_TABLES_AND_SEATS") {
-    fetch(`${server}/api/theaters/${action.theater_id}/tables/`)
-      .then(res => res.json())
-      .then(tables => dispatch({ type: "SET_TABLES", tables }))
-      .catch(err => console.error("Couldn't fetch tables", err))
+const fetchShowingsForDateMiddleware = ({ dispatch }) => next => async (action) => {
+  const { type, filmId, selectedDate } = action
+  if (type === 'FETCH_SHOWINGS') {
+    try {
+      const { data: showings } = await axios.get(`${host}/api/showings/${filmId}/${selectedDate}`)
+      dispatch({ type: 'SET_SHOWINGS', showings })
+    } catch (e) {
+      console.error('Could not fetch showings', e)
+    }
   }
-  next(action);
 }
 
-const fetchReservationsMiddleware = ({ dispatch, getState }) => next => action => {
-  if (action.type === "FETCH_RESERVATIONS") {
-    fetch(`${server}/api/showings/${action.showing_id}/reservations/`)
-      .then(res => res.json())
-      .then(reservations => dispatch({ type: "SET_RESERVATIONS", reservations }))
-      .catch(err => console.error("Couldn't fetch reservations", err))
+const fetchReservationsMiddleware = ({ dispatch }) => next => async (action) => {
+  const { showingId, type } = action
+  if (type === 'FETCH_RESERVATIONS') {
+    try {
+      const { data: tables } = await axios.get(`${host}/api/showings/${showingId}/reservations`)
+      dispatch({ type: 'SET_RESERVATIONS', reservations })
+    } catch (e) {
+      console.error('Could not fetch tables', e)
+    }
   }
-  next(action);
 }
 
-export default [fetchFilmsMiddleware, fetchShowingsForDateMiddleware, fetchTablesAndSeatsMiddleware, fetchReservationsMiddleware];
+export default [
+  fetchFilmsMiddleware, fetchTablesAndSeatsMiddleware, fetchShowingsForDateMiddleware, fetchReservationsMiddleware,
+]

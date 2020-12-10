@@ -1,23 +1,25 @@
-import React from 'react';
-import { Text, TouchableHighlight, View, Image } from 'react-native';
-import { store } from './store/store';
-import { host } from './helpers';
+import React from 'react'
+import { Image, Text, TouchableHighlight, View } from 'react-native'
+import { host } from './api'
+import { useDispatch } from 'react-redux'
+import { FilmImage } from './FilmImage'
 
 export const FilmBrief = ({ film }) => {
- return (
-  <TouchableHighlight onPress={selectThisFilm}>
-   <View flexDirection="row">
-    <Image source={{ uri: `${host}/${film.poster_path}` }} style={{ width: 100, height: 100, resizeMode: "contain" }} />
-    <View>
-     <Text>{film.title}</Text>
-     <Text>{film.tagline}</Text>
-    </View>
-   </View>
-  </TouchableHighlight>
- )
-
- function selectThisFilm(e) {
-  store.dispatch({ type: "SET_SELECTED_FILM", film });
-  store.dispatch({ type: "SHOW_FILM_DETAILS" });
- }
+  const { id, title, tagline, poster_path } = film
+  const dispatch = useDispatch()
+  const selectFilm = () => {
+    dispatch({ type: 'SET_SELECTED_FILM', film })
+    dispatch({ type: 'SHOW_FILM_DETAILS' })
+  }
+  return (
+    <TouchableHighlight onPress={selectFilm}>
+      <View style={{ flex: 1, flexDirection: 'row' }}>
+        <FilmImage film={film} style={{ height: 100, width: 100, resizeMode: 'contain' }} />
+        <View>
+          <Text>{title}</Text>
+          <Text>{tagline}</Text>
+        </View>
+      </View>
+    </TouchableHighlight>
+  )
 }

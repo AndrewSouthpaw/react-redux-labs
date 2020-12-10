@@ -1,39 +1,28 @@
-import React, { useState } from 'react';
-import { Button, ScrollView, Text, SafeAreaView, View } from 'react-native';
-import { formatShowingDate, formatShowingTime } from './helpers';
-import { store } from './store/store';
+import React from 'react'
+import tables from './assets/tables.json'
+import { Button, SafeAreaView, ScrollView, Text, View } from 'react-native'
 
-import tables from './assets/tables.json';
-
-export const PickSeats = () => {
-
- const { selected_date, selected_film } = store.getState();
- console.log("tables", tables);
- return (
+export const PickSeats = () => (
   <SafeAreaView>
-   <Text>Choose your seats for</Text>
-   <Text>{selected_film.title}</Text>
-   <Text>on</Text>
-   <Text>{formatShowingDate(selected_date)}</Text>
-   <Text>at</Text>
-   <Text>{formatShowingTime(selected_date)}</Text>
-   <ScrollView>
-    {tables.map(table => {
-     console.log("seats are", table.seats);
-     return (<View key={table.id}>
-      <Text>Table {table.id}</Text>
-      <View style={{flexDirection:"row"}}>
-       {table.seats.length && table.seats.map(seat => <Text key={seat._id}>Seat {seat.seat_number}</Text>)}
-      </View>
-     </View>)
-    }
-    )}
-   </ScrollView>
-   <Button title="Checkout" onPress={checkout} />
+    <Text>Choose your seats for</Text>
+    <Text>Movie</Text>
+    <Text>on</Text>
+    <Text>Some date...</Text>
+    <Text>Some time...</Text>
+    <ScrollView>
+      {tables.map(table => (
+        <View>
+          <Text>Table {table.table_number}</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
+            {table.seats.map(seat => (
+              <Text>Seat {seat.seat_number}</Text>
+            ))}
+          </View>
+        </View>
+      ))}
+    </ScrollView>
+    <View style={{ flexDirection: 'row-reverse' }}>
+      <Button title="Checkout" />
+    </View>
   </SafeAreaView>
- )
-}
-
-function checkout() {
- console.log("you pressed checkout")
-}
+)

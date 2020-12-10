@@ -1,34 +1,50 @@
-import React from 'react';
-import { Button, Image, Modal, SafeAreaView, ScrollView, Text, View } from 'react-native';
-import { store } from './store/store';
-import { DatePicker } from './DatePicker';
-import { FilmBrief } from './FilmBrief';
-import { FilmDetails } from './FilmDetails';
+import React, { useState } from 'react'
+import { Modal, RefreshControl, ScrollView, Button, Text, View, Image } from 'react-native'
+import { FilmBrief } from './FilmBrief'
+import { DatePicker } from './DatePicker'
+import { useDispatch } from 'react-redux'
+import { FilmDetails } from './FilmDetails'
+import showings from './showings.json'
+import logo from './assets/daam.png'
 
-
-export const Landing = props => {
- const { films, selected_date, selected_film, show_film_details, showings } = props;
- return (
-  <SafeAreaView>
-   <ScrollView>
-    <View flexDirection="row">
-     <Image source={require("./assets/daam.png")} style={{height:100, width:100}} />
-     <View>
-      <Text>Dinner and a Movie</Text>
-      <Text>Tap on a film to see its details and pick a date to see showtimes.</Text>
-     </View>
-    </View>
-    <DatePicker selected_date={selected_date} />
-    {films.map(film => <FilmBrief film={film} isSelected={film === selected_film} key={film.id} />)}
-   </ScrollView>
-   <Modal visible={show_film_details}>
-    <FilmDetails selected_film={selected_film} selected_date={selected_date} showings={showings} />
-    <Button onPress={dismissModal} title="Done" />
-   </Modal>
-  </SafeAreaView>
- )
+const wait = (timeout) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout)
+  })
 }
 
-function dismissModal() {
- store.dispatch({ type: "HIDE_FILM_DETAILS" });
+export const Landing = ({ films, selectedDate, selectedFilm, showFilmDetails }) => {
+  const dispatch = useDispatch()
+  const [refreshing, setRefreshing] = useState(false)
+
+  const onRefresh = () => {
+    setRefreshing(true)
+    wait(2000).then(() => setRefreshing(false))
+  }
+
+  const closeModal = () => { dispatch({ type: 'HIDE_FILM_DETAILS' }) }
+
+  return (
+    <View>
+      <Modal animationType="slide" visible={showFilmDetails}>
+        <FilmDetails selectedDate={selectedDate} film={selectedFilm} showings={showings} />
+        <Button title="Done" onPress={closeModal} />
+      </Modal>
+
+      <View style={{ flexDirection: 'row' }}>
+        <Image style={{ width: 50, height: 50 }} source={logo} />
+        <Text>Dinner and a Movie</Text>
+      </View>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <DatePicker selectedDate={selectedDate} />
+        {films.map((film) => (
+          <FilmBrief key={film.id} film={film} selected={film === selectedFilm} />
+        ))}
+      </ScrollView>
+    </View>
+  )
 }
