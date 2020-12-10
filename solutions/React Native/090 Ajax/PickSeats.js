@@ -91,4 +91,3 @@ function formatSelectedDate(selected_date) {
     minute: 'numeric'
   });
 }
-

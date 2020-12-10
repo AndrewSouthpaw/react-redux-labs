@@ -17,7 +17,7 @@ export const Checkout = props => {
       <Text>Checking out</Text>
       <Text>Your cart</Text>
       <View>
-       {console.log("cart is", cart)} 
+       {console.log("cart is", cart)}
        <Text>Your Cart</Text>
        {cart.seats.map(seat => <Text key={`${seat.table_number}_${seat.seat_number}`}>Table {seat.table_number}, seat {seat.seat_number}</Text>)}
        <Text>Subtotal: {getSubTotal(cart)}</Text>

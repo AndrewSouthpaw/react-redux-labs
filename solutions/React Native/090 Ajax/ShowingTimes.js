@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 })
 
 export function ShowingTimes(props) {
-  if (! props.showings) return null 
+  if (! props.showings) return null
   const showings = props.showings.map(showing => ({ ...showing, showing_time: formatShowingTime(showing.showing_time) }))
   return (
     <View style={styles.container}>

@@ -9,7 +9,7 @@ export class Checkout extends Component {
 
   render() {
     return (
-      <SafeAreaView> 
+      <SafeAreaView>
       <KeyboardAvoidingView behavior="position">
         <ScrollView>
           <View style={styles.container}>

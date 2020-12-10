@@ -25,7 +25,7 @@ export default class App extends Component {
     {/* <Landing {...this.state} /> */}
    </View>
   );
- } 
+ }
 }
 
 const styles = StyleSheet.create({

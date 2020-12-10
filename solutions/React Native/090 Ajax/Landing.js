@@ -65,5 +65,3 @@ export class Landing extends Component {
     header: null,
   }
 }
-
-

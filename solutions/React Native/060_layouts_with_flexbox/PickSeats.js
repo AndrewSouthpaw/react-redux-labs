@@ -6,7 +6,7 @@ import { store } from './store/store';
 import tables from './assets/tables.json';
 
 export const PickSeats = () => {
- 
+
  const { selected_date, selected_film } = store.getState();
  console.log("tables", tables);
  return (

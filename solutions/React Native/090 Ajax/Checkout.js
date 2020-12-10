@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import cart from './cart.json';
 
 export class Checkout extends Component {
@@ -8,10 +8,8 @@ export class Checkout extends Component {
   total = 0;
 
   render() {
-    console.log(Platform.ios, Platform.android, Platform)
-
     return (
-      <SafeAreaView> 
+      <SafeAreaView>
       <KeyboardAvoidingView behavior="position">
         <ScrollView>
           <View style={styles.container}>
@@ -46,8 +44,10 @@ export class Checkout extends Component {
   }
 
   purchase = () => {
-    throw new Error("Not yet implemented");
+    const navigationParams = { selected_film: { title: "Sack Lunch", poster_path: "/img/posters/6.jpg"}, showing: { showing_time: new Date(2018, 10, 15, 17, 15)}, seats: [ {_id: 123, table_number: 5, seat_number: 1, },{_id: 124, table_number: 5, seat_number: 2, }, ]};
+    this.props.navigation.navigate('Ticket',navigationParams);
   }
+
   handleChange(name, text) {
     console.log(`${name} was changed to ${text}`);
   }
@@ -62,6 +62,10 @@ export class Checkout extends Component {
         <Text style={styles.cartText}>{line.price}</Text>
       </View>
     )
+  }
+
+  static navigationOptions = {
+    title: "Your cart",
   }
 }
 

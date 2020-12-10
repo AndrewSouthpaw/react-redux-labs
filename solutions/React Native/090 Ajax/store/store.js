@@ -7,7 +7,8 @@ const initialState = {
   selected_date: new Date(),
   selected_film: {},
   showFilmDetails: false,
+  tables: [],
 }
 
-export const store = createStore(reducer, initialState,   
+export const store = createStore(reducer, initialState,
                                  applyMiddleware(...middlewares));

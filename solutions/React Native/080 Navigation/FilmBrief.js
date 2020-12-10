@@ -4,7 +4,7 @@ import { store } from './store/store';
 import { Title } from './Title';
 
 const styles = StyleSheet.create({
-  mainLayout: { 
+  mainLayout: {
     marginTop: 20,
     flexDirection: 'row' },
   image: {

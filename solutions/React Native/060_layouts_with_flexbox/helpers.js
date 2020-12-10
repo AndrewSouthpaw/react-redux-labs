@@ -27,4 +27,3 @@ export const formatShowingTime = showing_time => {
  //const hh = h < 10 ? 0 + h : h;
  return `${h > 12 ? h - 12 : h}:${m < 10 ? "0"+m : m} ${h < 12 ? "am" : "pm"}`
 }
-

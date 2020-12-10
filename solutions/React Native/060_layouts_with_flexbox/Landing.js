@@ -14,7 +14,7 @@ export const Landing = props => {
     <View flexDirection="row">
      <Image source={require("./assets/daam.png")} style={{height:100, width:100}} />
      <View>
-      <Text>Dinner and a Movie</Text> 
+      <Text>Dinner and a Movie</Text>
       <Text>Tap on a film to see its details and pick a date to see showtimes.</Text>
      </View>
     </View>
