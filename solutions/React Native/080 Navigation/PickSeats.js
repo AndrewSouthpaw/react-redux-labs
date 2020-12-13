@@ -1,14 +1,40 @@
-import React from 'react';
-import { Button, ScrollView, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { Table } from './Table.js';
-import { Title } from './Title';
+import React from 'react'
+import { Button, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Table } from './Table'
+import { Title } from './Title'
+import tables from './assets/tables.json'
+import { formatSelectedDate, formatShowingTime } from './showingTime'
 
-import tables from './tables.json';
+export const PickSeats = ({ navigation }) => {
+  const selectedFilm = navigation.getParam('selectedFilm')
+  const selectedDate = navigation.getParam('selectedDate')
+  const showing = navigation.getParam('showing')
+
+  const checkout = (table, seat) => {
+    navigation.navigate('Checkout', { selectedDate, selectedFilm, showing, table, seat })
+  }
+
+  return (
+    <SafeAreaView>
+      <Text style={styles.headline}>Choose your seats for</Text>
+      <View style={styles.movieTitle}>
+        <Title>{selectedFilm.title}</Title>
+      </View>
+      <Text style={styles.on}>on</Text>
+      <Text style={styles.selectedDate}>{formatSelectedDate(selectedDate)}</Text>
+      <Text style={styles.on}>at</Text>
+      <Text style={styles.selectedDate}>{formatShowingTime(showing.showing_time)}</Text>
+      <ScrollView style={styles.tablesContainer}>
+        {tables.map(table => (
+          <Table table={table} key={table._id} onSelect={() => checkout(table)} />
+        ))}
+      </ScrollView>
+      <Button title="Check out" onPress={checkout} style={styles.checkoutButton} />
+    </SafeAreaView>
+  )
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   headline: {
     alignSelf: 'center',
     fontSize: 20,
@@ -19,52 +45,16 @@ const styles = StyleSheet.create({
   on: {
     alignSelf: 'center',
   },
-  selected_date: {
+  selectedDate: {
     alignSelf: 'center',
     fontSize: 20,
   },
   tablesContainer: {
-    padding: 5
+    padding: 5,
   },
   checkoutButton: {
     backgroundColor: 'green',
     color: 'white',
     borderColor: 'darkgreen',
-
-  }
+  },
 })
-export function PickSeats(props) {
-  const { selected_film, selected_date, showing } = props.navigation.state.params;
-  const checkout = () => {
-    props.navigation.navigate('Checkout');
-  }
-  console.log("pickseats", props)
-  return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.headline}>Choose your seats for</Text>
-      <View style={styles.movieTitle}>
-        <Title>{selected_film.title}</Title>
-      </View>
-      <Text style={styles.on}>on</Text>
-      <Text style={styles.selected_date}>{formatSelectedDate(selected_date)}</Text>
-      <ScrollView style={styles.tablesContainer}>
-        {tables.map(table => <Table {...table} key={table._id} />)}
-      </ScrollView>
-      <Button title="Check out" onPress={checkout} style={styles.checkoutButton} />
-    </SafeAreaView>
-  )
-}
-
-function formatSelectedDate(selected_date) {
-  return selected_date.toLocaleString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric'
-  });
-}
-
-PickSeats.navigationOptions = {
-  title: "Seat map",
-}
