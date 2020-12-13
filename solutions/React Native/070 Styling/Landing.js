@@ -1,47 +1,99 @@
-import React from 'react';
-import { Button, Image, Modal, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { store } from './store/store';
-import { DatePicker } from './DatePicker';
-import { FilmBrief } from './FilmBrief';
-import { FilmDetails } from './FilmDetails';
-import { ShowingTimes } from './ShowingTimes';
-import { Title } from './Title';
-
+import React, { useState } from 'react'
+import { Modal, RefreshControl, ScrollView, Button, Text, View, Image, StyleSheet, SafeAreaView } from 'react-native'
+import { FilmBrief } from './FilmBrief'
+import { DatePicker } from './DatePicker'
+import { useDispatch } from 'react-redux'
+import { FilmDetails } from './FilmDetails'
 import showings from './showings.json'
+import logo from './assets/daam.png'
+import { Title } from './Title'
+import { ShowingTimes } from './ShowingTimes'
 
-const styles = StyleSheet.create({
-  header: { flex: 1, flexDirection: 'row' },
-  logo: {
-    height: 75, width: 75,
+const wait = (timeout) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout)
+  })
+}
+
+export const Landing = ({ films, selectedDate, selectedFilm, showFilmDetails }) => {
+  const dispatch = useDispatch()
+  const [refreshing, setRefreshing] = useState(false)
+
+  const onRefresh = () => {
+    setRefreshing(true)
+    wait(2000).then(() => setRefreshing(false))
   }
-});
 
-export function Landing(props) {
+  const closeModal = () => { dispatch({ type: 'HIDE_FILM_DETAILS' }) }
+
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <View>
-          <View style={styles.header}>
-            <Image source={require(`./assets/daam.png`)} style={styles.logo} />
-            <Title>Dinner And A Movie</Title>
-          </View>
-          <Text>Tap a movie below to see its details. Then pick a date to see showtimes.</Text>
-          <DatePicker />
-          {props.showings && <ShowingTimes showings={props.showings} />}
-          {props.films.map(film => (
-            <FilmBrief film={film} key={film.id} isSelected={film.id === props.selected_film.id} />
-          )
-          )}
-        </View>
-        <Modal visible={props.showFilmDetails}>
-          <ScrollView>
-            <FilmDetails film={props.selected_film} selected_date={props.selected_date} showings={showings} />
-            <Button title="Done" onPress={() => store.dispatch({ type: "HIDE_FILM_DETAILS" })} />
-          </ScrollView>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        <Modal animationType="slide" visible={showFilmDetails}>
+          <SafeAreaView style={styles.container}>
+            <FilmDetails selectedDate={selectedDate} film={selectedFilm} showings={showings} />
+            <Button title="Done" onPress={closeModal} />
+          </SafeAreaView>
         </Modal>
-      </ScrollView>
+
+        <View style={styles.header}>
+          <Image style={styles.logo} source={logo} resizeMode="contain" />
+          <Title>Dinner and a Movie</Title>
+        </View>
+
+        <Text>Tap a movie below to see its details. Then pick a date to see showtimes.</Text>
+        <DatePicker selectedDate={selectedDate} />
+        <ShowingTimes selectedDate={selectedDate} showings={showings} />
+
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+          {films.map((film) => (
+            <FilmBrief key={film.id} film={film} selected={film === selectedFilm} />
+          ))}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   )
-
-
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  header: { flexDirection: 'row' },
+  logo: {
+    height: 75, width: 75,
+  },
+})
+
+// return (
+//   <SafeAreaView style={{ flex: 1, borderColor: 'purple', borderWidth: 3 }}>
+//     <View style={{flex: 1, borderColor: 'yellow', borderWidth: 3}}>
+//       <Modal animationType="slide" visible={showFilmDetails}>
+//         <FilmDetails selectedDate={selectedDate} film={selectedFilm} showings={showings} />
+//         <Button title="Done" onPress={closeModal} />
+//       </Modal>
+//
+//       <View style={[styles.header, {borderColor: 'red', borderWidth: 3}]}>
+//         <Image style={[styles.logo, {borderColor: 'green', borderWidth: 3}]} source={logo} resizeMode="contain" />
+//         <Title>Dinner and a Movie</Title>
+//       </View>
+//       <Text>Tap a movie below to see its details. Then pick a date to see showtimes.</Text>
+//       <ScrollView
+//         refreshControl={
+//           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+//         }
+//       >
+//         <DatePicker selectedDate={selectedDate} />
+//         {films.map((film) => (
+//           <FilmBrief key={film.id} film={film} selected={film === selectedFilm} />
+//         ))}
+//       </ScrollView>
+//     </View>
+//   </SafeAreaView>
+// )
+// }
+//
+// const styles = StyleSheet.create({
+//   header: { flex: 1, flexDirection: 'row', height: 80 },
+//   logo: {
+//     height: 75, width: 75,
+//   },
+// })

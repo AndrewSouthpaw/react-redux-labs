@@ -1,5 +1,18 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+
+export const Table = ({ tableNumber, seats }) => (
+  <View style={styles.container}>
+    <Text style={styles.tableNumber}>Table {tableNumber}</Text>
+    <View style={styles.seatsGroup}>
+      {seats.map(seat => (
+        <Text style={styles.seat} key={seat._id}>
+          Seat {seat.seat_number}
+        </Text>
+      ))}
+    </View>
+  </View>
+)
 
 const styles = StyleSheet.create({
   container: {
@@ -8,7 +21,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     borderColor: '#140CE8',
-    backgroundColor: '#11FF95'
+    backgroundColor: '#11FF95',
   },
   tableNumber: {
     fontWeight: 'bold',
@@ -16,22 +29,11 @@ const styles = StyleSheet.create({
     color: '#140CE8',
   },
   seatsGroup: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   seat: {
     fontWeight: 'bold',
     paddingLeft: 5,
     paddingRight: 5,
-  }
+  },
 })
-export function Table(props) {
-  console.log("in table", props)
-  return (
-    <View style={styles.container}>
-      <Text style={styles.tableNumber}>Table {props.table_number}</Text>
-      <View style={styles.seatsGroup}>
-        {props.seats.map(seat => <Text style={styles.seat} key={seat._id}>Seat {seat.seat_number}</Text>)}
-      </View>
-    </View>
-  )
-}

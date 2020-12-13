@@ -1,40 +1,26 @@
-import React, { Component } from 'react';
-import { Button, DatePickerAndroid, DatePickerIOS, Platform, Text, View } from 'react-native';
-import { store } from './store/store';
+import React, { useState } from 'react'
+import { Button, DatePickerAndroid, DatePickerIOS, Platform, View } from 'react-native'
+import { useDispatch } from 'react-redux'
 
-export class DatePicker extends Component {
-  constructor() {
-    super();
-    this.state = { ...store.getState() };
+export const DatePicker = ({ selectedDate }) => {
+  const [showIOSPicker, setShowIOSPicker] = useState(false)
+  const dispatch = useDispatch()
+  const handleIOSDateChange = (date) => {
+    dispatch({ type: 'SET_SELECTED_DATE', date })
+    setShowIOSPicker(false)
   }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    return { ...store.getState() };
-  }
-
-  render() {
-    return (
-      <View>
-        <Button onPress={this.showModal}
-          title={`Showing times for ${this.state.selected_date.toDateString()}`} />
-        {this.state.showIOSPicker && <DatePickerIOS date={this.state.selected_date} onDateChange={this.setIOSDate} mode="date" />}
-      </View>
-    )
-  }
-
-  showModal = () => {
-    if (Platform.OS === "android") {
-      DatePickerAndroid.open()
-        .then(date => store.dispatch(
-          { type: "SET_SELECTED_DATE", date: new Date(date.year, date.month, date.day) }))
-        .catch(err => console.error("Problem picking a date", err));
-    } else {
-      this.setState({ showIOSPicker: !this.state.showIOSPicker });
+  const pickDate = async () => {
+    if (Platform.OS === 'android') {
+      const { year, month, day } = await DatePickerAndroid.open()
+      dispatch({ type: 'SET_SELECTED_DATE', date: new Date(year, month, day) })
+    } else if (Platform.OS === 'ios') {
+      setShowIOSPicker(true)
     }
   }
-
-  setIOSDate = date => {
-    store.dispatch({ type: "SET_SELECTED_DATE", date });
-    this.setState({ showIOSPicker: !this.state.showIOSPicker });
-  }
+  return (
+    <View>
+      <Button title="Change date" onPress={pickDate} />
+      {showIOSPicker && (<DatePickerIOS date={selectedDate} onDateChange={handleIOSDateChange} />)}
+    </View>
+  )
 }
