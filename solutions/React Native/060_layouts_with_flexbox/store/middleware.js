@@ -24,6 +24,8 @@ const fetchTablesAndSeatsMiddleware = ({ dispatch }) => next => async (action) =
       console.error('Could not fetch tables', e)
     }
   }
+
+  return next(action)
 }
 
 const fetchShowingsForDateMiddleware = ({ dispatch }) => next => async (action) => {
@@ -36,6 +38,8 @@ const fetchShowingsForDateMiddleware = ({ dispatch }) => next => async (action) 
       console.error('Could not fetch showings', e)
     }
   }
+
+  return next(action)
 }
 
 const fetchReservationsMiddleware = ({ dispatch }) => next => async (action) => {
@@ -48,6 +52,8 @@ const fetchReservationsMiddleware = ({ dispatch }) => next => async (action) => 
       console.error('Could not fetch tables', e)
     }
   }
+
+  return next(action)
 }
 
 export default [
