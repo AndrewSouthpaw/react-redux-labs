@@ -11,7 +11,7 @@ module.exports = (req, res, next) => {
     const theater_id = match[1];
     const db = readDatabase();
     const theater = db.theaters.find(t => t.id == theater_id)
-    const tables = theater?.tables;
+    const tables = (theater || {}).tables;
     if (tables) {
       res.status(200).json(tables)
     } else {
