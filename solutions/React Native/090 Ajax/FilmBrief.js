@@ -1,38 +1,44 @@
-import React from 'react';
-import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
-import { store } from './store/store';
-import { Title } from './Title';
+import React from 'react'
+import { StyleSheet, Text, TouchableHighlight, View } from 'react-native'
+import { useDispatch } from 'react-redux'
+import { FilmImage } from './FilmImage'
+import { Title } from './Title'
 
-const styles = StyleSheet.create({
-  mainLayout: {
-    marginTop: 20,
-    flexDirection: 'row' },
-  image: {
-    resizeMode: 'contain',
-    height: 100, width: 100,
-  },
-  taglineText: {
-  },
-  textWrapper: {
-    flex: 1,    // Added so the tagline wraps
-  }
-});
+const selectFilm = (film, dispatch) => {
+  dispatch({ type: 'SET_SELECTED_FILM', film })
+  dispatch({ type: 'SHOW_FILM_DETAILS' })
+}
 
-export function FilmBrief(props) {
+export const FilmBrief = ({ film }) => {
+  const { title, tagline } = film
+  const dispatch = useDispatch()
+
   return (
-    <TouchableHighlight onPress={selectThisFilm}>
+    <TouchableHighlight
+      onPress={() => selectFilm(film, dispatch)}
+    >
       <View style={styles.mainLayout}>
-        <Image source={{ uri: `http://localhost:5000/${props.film.poster_path}` }} style={styles.image} />
+        <FilmImage film={film} style={styles.image} />
         <View style={styles.textWrapper}>
-          <Title>{props.film.title}</Title>
-          <Text style={styles.taglineText}>{props.film.tagline}</Text>
+          <Title>{title}</Title>
+          <Text style={styles.taglineText}>{tagline}</Text>
         </View>
       </View>
     </TouchableHighlight>
   )
-
-  function selectThisFilm(e) {
-    store.dispatch({ type: "SET_SELECTED_FILM", film: props.film });
-    store.dispatch({ type: "SHOW_FILM_DETAILS" });
-  }
 }
+
+const styles = StyleSheet.create({
+  mainLayout: {
+    marginTop: 20,
+    flexDirection: 'row',
+  },
+  image: {
+    resizeMode: 'contain',
+    height: 100, width: 100,
+  },
+  taglineText: {},
+  textWrapper: {
+    flex: 1, // Added so the tagline wraps
+  },
+})

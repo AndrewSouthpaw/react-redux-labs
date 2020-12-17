@@ -1,7 +1,63 @@
-import React from 'react';
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import QRCode from 'react-native-qrcode';
-import { Title } from './Title';
+import React from 'react'
+import { Button, Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import QRCode from 'react-native-qrcode-svg'
+import { Title } from './Title'
+import { FilmImage } from './FilmImage'
+import { formatSelectedDate, formatShowingTime } from './showingTime'
+import { StackActions } from 'react-navigation'
+import { HeaderBackButton } from 'react-navigation-stack'
+
+export const Ticket = ({ navigation }) => {
+  const selectedFilm = navigation.getParam('selectedFilm')
+  const selectedDate = navigation.getParam('selectedDate')
+  const showing = navigation.getParam('showing')
+  const seats = navigation.getParam('seats')
+
+  const ticketNumber = getTicketNumber()
+
+  const handleDone = () => {
+    navigation.dispatch(StackActions.popToTop())
+  }
+
+  return (
+    <SafeAreaView>
+      <ScrollView>
+        <View>
+          <Text style={styles.greeting}>
+            We're looking forward to seeing you! Show this to your host when you arrive.
+            This is your ticket.
+          </Text>
+          <View style={styles.titleContainer}>
+            <FilmImage film={selectedFilm} style={styles.poster} />
+            <Title style={{ flex: 1 }}>{selectedFilm.title}</Title>
+          </View>
+          <Text style={styles.showingTime}>{formatSelectedDate(selectedDate)}</Text>
+          <Text style={styles.showingTime}>{formatShowingTime(showing.showing_time)}
+          </Text>
+          <View style={styles.ticketContainer}>
+            <QRCode value={ticketNumber.toString()} size={300} />
+            <Text>Ticket number: {ticketNumber}</Text>
+          </View>
+          <View style={styles.seatContainer}>
+            {seats.map(seat => (
+              <Text style={styles.seat} key={seat.id}>
+                Table {seat.table_number} Seat {seat.seat_number}
+              </Text>
+            ))}
+          </View>
+          <Button title="Done" onPress={handleDone} />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  )
+}
+
+Ticket.navigationOptions = ({ navigation }) => ({
+  headerLeft: () => <HeaderBackButton label="Home" onPress={() => navigation.dispatch(StackActions.popToTop())} />,
+  headerTitle: 'Dinner and a Movie',
+})
+
+const getTicketNumber = () => Math.floor((Math.random() * 1000000) - 50000)
 
 const styles = StyleSheet.create({
   header: { flex: 1, flexDirection: 'row' },
@@ -41,43 +97,5 @@ const styles = StyleSheet.create({
   seat: {
     fontSize: 20,
     paddingLeft: 20,
-  }
-});
-
-export function Ticket(props) {
-  const { selected_film, showing, seats } = props.navigation.state.params;
-  const ticket_number = getTicketNumber();
-  return (
-    <SafeAreaView>
-      <ScrollView>
-        <View>
-          <View style={styles.header}>
-            <Image source={require(`./assets/daam.png`)} style={styles.logo} />
-            <Title>Dinner And A Movie</Title>
-          </View>
-
-          <Text style={styles.greeting}>We're looking forward to seeing you! Show this to your host when you arrive. This is your ticket.</Text>
-          <View style={styles.titleContainer}>
-            <Image source={{ uri: `http://localhost:5000/${selected_film.poster_path}` }} style={styles.poster} />
-            <Title>{selected_film.title}</Title>
-          </View>
-          <Text style={styles.showingTime}>Sat Oct 2, 2018 7:15pm</Text>
-          <View style={styles.ticketContainer}>
-            <QRCode value={ticket_number} size={300} />
-            <Text>Ticket number: {ticket_number}</Text>
-          </View>
-          <View style={styles.seatContainer}>
-            {seats.map(seat => <Text style={styles.seat} key={seat._id}>Table {seat.table_number} Seat {seat.seat_number}</Text>)}
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  )
-
-}
-Ticket.navigationOptions = {
-  header: null,
-}
-function getTicketNumber() {
-  return Math.floor((Math.random() * 1000000) - 50000)
-}
+  },
+})

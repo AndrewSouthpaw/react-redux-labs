@@ -1,4 +1,8 @@
-import React from 'react';
-import { Text } from 'react-native';
+import { Text } from 'react-native'
+import React from 'react'
 
-export const Title = props => <Text style={{fontSize:30,fontWeight:'bold'}}>{props.children}</Text>
+export const Title = ({ children, style }) => (
+  <Text style={{ fontSize: 30, fontWeight: 'bold', ...style }}>
+    {children}
+  </Text>
+)
