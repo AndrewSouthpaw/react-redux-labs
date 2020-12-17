@@ -3,7 +3,8 @@
   "routes": "./routes.json",
   "middlewares": [
     "./middlewares/logging-middleware.js",
-    "./middlewares/chaos-monkey-middleware.js",
+    "./middlewares/chaos-monkey-slowdown.js",
+    "./middlewares/chaos-monkey-failure.js",
     "./middlewares/authentication-middleware.js",
     "./middlewares/showings-middleware.js",
     "./middlewares/theaters-middleware.js"

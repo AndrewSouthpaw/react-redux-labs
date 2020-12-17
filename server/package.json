@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "json-server --config json-server.json ./database.json",
     "server-slow": "SLOWDOWN=2000 json-server --config json-server.json ./database.json",
-    "server-flaky": "FAILURES=0.6 json-server --config json-server.json ./database.json",
+    "server-flaky": "SLOWDOWN=2000 FAILURES=0.6 json-server --config json-server.json ./database.json",
     "server-device": "json-server --config json-server.json ./database.json -H $(ipconfig getifaddr en0)"
   },
   "author": "RapPayne",
