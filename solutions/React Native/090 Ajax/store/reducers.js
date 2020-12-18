@@ -20,7 +20,11 @@ registerHandler('SHOW_FILM_DETAILS', showFilmDetails)
 const hideFilmDetails = (state) => ({ ...state, showFilmDetails: false })
 registerHandler('HIDE_FILM_DETAILS', hideFilmDetails)
 
+// this commented code is the same as the one line below
+// const setShowings = (showings, state) => ({ ...state, showings })
+// registerHandler('SET_SHOWINGS', setShowings)
 registerHandler('SET_SHOWINGS', assoc('showings'))
+
 registerHandler('SET_TABLES', assoc('tables'))
 registerHandler('SET_RESERVATIONS', assoc('reservations'))
 registerHandler('SET_SHOWINGS', assoc('showings'))
